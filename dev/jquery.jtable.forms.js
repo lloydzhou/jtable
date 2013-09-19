@@ -417,11 +417,13 @@
                 if (field.edit == false) {
                     continue;
                 }
-
+                
                 //Get field name and the input element of this field in the form
-                var $inputElement = $form.find('[name="' + fieldName + '"]');
-                if ($inputElement.length <= 0) {
-                    continue;
+                var $inputElement = null;
+                if (field.type == 'checkbuttons') {
+                    $inputElement = $form.find('[name="' + fieldName + '[]"]');
+                } else {
+                    $inputElement = $form.find('[name="' + fieldName + '"]');
                 }
 
                 //Update field in record according to it's type
@@ -448,6 +450,13 @@
                     } else {
                         record[fieldName] = undefined;
                     }
+                } else if (field.type == 'checkbuttons') {
+                    record[fieldName] = [];
+                    $inputElement.each(function(){
+                        if ($(this).is(':checked')) {
+                            record[fieldName].push( { Value:$(this).val(), DisplayText:$(this).attr('DisplayText') } );
+                        }
+                    });
                 } else {
                     record[fieldName] = $inputElement.val();
                 }
