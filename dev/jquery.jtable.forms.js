@@ -80,6 +80,8 @@
             } else if (field.options) {
                 if (field.type == 'radiobutton') {
                     return this._createRadioButtonListForField(field, fieldName, value, record, formType);
+                } else if (field.type == 'checkboxlist') {
+                    return this._createCheckboxListForField(field, fieldName, value, record, formType, form);
                 } else {
                     return this._createDropDownListForField(field, fieldName, value, record, formType, form);
                 }
@@ -212,6 +214,43 @@
             return $containerDiv;
         },
 
+        /* Creates a checkbox list for a field.
+        *************************************************************************/
+        _createCheckboxListForField: function(field, fieldName, value, record, source, form){
+            //Create a container div
+            var $containerDiv = $('<div />')
+                .addClass('jtable-input jtable-checkboxlist-input');
+            
+            //add options
+            var options = this._getOptionsForField(fieldName, {
+                record: record,
+                source: source,
+                form: form,
+                dependedValues: this._createDependedValuesUsingForm(form, field.dependsOn)
+            });
+            
+            this._fillCheckboxListWithOptions($containerDiv, field, fieldName, options, value);
+            
+            return $containerDiv;
+        },
+        
+        /* Fills a checkbox list with given options.
+        *************************************************************************/
+        _fillCheckboxListWithOptions: function ($containerDiv, field, fieldName, options, value) {
+            var checked = '';
+            for (var i = 0; i < options.length; i++) {
+                checked = '';
+                for (var j in value) {
+                    if (value[j].Value == options[i].Value) {
+                        checked = 'checked="checked"';
+                        break;
+                    }
+                }
+                $('<div class="' + field.inputClass + '"><span>' + options[i].DisplayText + '</span><input type="checkbox" ' + checked + ' name="' + fieldName + '[]" value="' + options[i].Value + '"></div>')
+                    .appendTo($containerDiv);
+            }
+        },
+        
         /* Creates a drop down list (combobox) input element for a field.
         *************************************************************************/
         _createDropDownListForField: function (field, fieldName, value, record, source, form) {
