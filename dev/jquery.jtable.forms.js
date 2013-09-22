@@ -355,6 +355,19 @@
         _getCheckBoxTextForFieldByValue: function (fieldName, value) {
             return this.options.fields[fieldName].values[value];
         },
+        
+        /* Gets display text for a checkboxlist field.
+        *************************************************************************/
+        _getCheckBoxListTextForFieldByValue: function (fieldName, value) {
+            var html = '';
+            html += '<span class="display-options">';
+                for (var i in value)
+                {
+                    html += '<span>' + value[i].DisplayText + '; </span>';
+                }
+            html += '</span>';
+            return html;
+        },
 
         /* Returns true if given field's value must be checked state.
         *************************************************************************/
@@ -460,7 +473,7 @@
                 
                 //Get field name and the input element of this field in the form
                 var $inputElement = null;
-                if (field.type == 'checkbuttons') {
+                if (field.type == 'checkboxlist') {
                     $inputElement = $form.find('[name="' + fieldName + '[]"]');
                 } else {
                     $inputElement = $form.find('[name="' + fieldName + '"]');
@@ -490,7 +503,7 @@
                     } else {
                         record[fieldName] = undefined;
                     }
-                } else if (field.type == 'checkbuttons') {
+                } else if (field.type == 'checkboxlist') {
                     record[fieldName] = [];
                     $inputElement.each(function(){
                         if ($(this).is(':checked')) {
